@@ -23,7 +23,13 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS
-app.use(cors());
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://eventix-frontend.vercel.app', 'https://eventix.vercel.app'] // Update with your actual frontend URL
+    : '*',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 // Mount routers
 app.use('/api/auth', authRoutes);
