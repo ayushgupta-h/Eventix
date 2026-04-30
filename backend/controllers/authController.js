@@ -3,7 +3,7 @@ const generateToken = require('../utils/generateToken');
 const generateOTP = require('../utils/generateOTP');
 const sendEmail = require('../utils/sendEmail');
 
-// @desc    Register user
+// @desc    Register user (No OTP required - instant registration)
 // @route   POST /api/auth/register
 // @access  Public
 exports.register = async (req, res) => {
@@ -19,46 +19,28 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Generate OTP
-    const otp = generateOTP();
-    const otpExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
-
-    // Create user
+    // Create user with instant verification (no OTP needed)
     const user = await User.create({
       name,
       email,
       password,
-      otp,
-      otpExpire,
+      isVerified: true, // Auto-verify user
     });
 
-    // Send OTP email
-    const message = `
-      <h1>Welcome to Eventix!</h1>
-      <p>Your OTP for email verification is:</p>
-      <h2 style="color: #6366f1; letter-spacing: 5px;">${otp}</h2>
-      <p>This OTP will expire in 10 minutes.</p>
-    `;
+    // Generate token immediately
+    const token = generateToken(user._id);
 
-    try {
-      await sendEmail({
+    res.status(201).json({
+      success: true,
+      message: 'Registration successful! You can now login.',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
         email: user.email,
-        subject: 'Email Verification - Eventix',
-        message,
-      });
-
-      res.status(201).json({
-        success: true,
-        message: 'User registered. Please verify your email with the OTP sent.',
-        userId: user._id,
-      });
-    } catch (error) {
-      await User.findByIdAndDelete(user._id);
-      return res.status(500).json({
-        success: false,
-        message: 'Email could not be sent',
-      });
-    }
+        role: user.role,
+      },
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

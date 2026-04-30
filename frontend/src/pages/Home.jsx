@@ -144,7 +144,6 @@ const Home = () => {
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{
                   y: -10,
                   boxShadow: '0 10px 30px rgba(99, 102, 241, 0.3)',
@@ -153,6 +152,7 @@ const Home = () => {
                   y: [0, -8, 0],
                 }}
                 transition={{
+                  opacity: { duration: 0.5, delay: index * 0.1 },
                   y: {
                     duration: 3 + index * 0.5,
                     repeat: Infinity,

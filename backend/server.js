@@ -14,6 +14,8 @@ connectDB();
 const authRoutes = require('./routes/authRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const testRoutes = require('./routes/testRoutes'); // TEMPORARY - Remove in production
+const seedRoutes = require('./routes/seedRoutes'); // TEMPORARY - Remove in production
 
 const app = express();
 
@@ -27,6 +29,8 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/test', testRoutes); // TEMPORARY - Remove in production
+app.use('/api/seed', seedRoutes); // TEMPORARY - Remove in production
 
 // Error handler
 app.use(errorHandler);
